@@ -105,6 +105,8 @@ set(GAME_SOURCES
   liars_dice/liars_dice.h
   maedn/maedn.cc
   maedn/maedn.h
+  magic_the_gathering/magic_the_gathering.cc
+  magic_the_gathering/magic_the_gathering.h
   mancala/mancala.cc
   mancala/mancala.h
   markov_soccer/markov_soccer.cc
@@ -488,6 +490,10 @@ add_test(liars_dice_test liars_dice_test)
 add_executable(maedn_test maedn/maedn_test.cc ${OPEN_SPIEL_OBJECTS}
                $<TARGET_OBJECTS:tests>)
 add_test(maedn_test maedn_test)
+
+add_executable(magic_the_gathering_test magic_the_gathering/magic_the_gathering_test.cc ${OPEN_SPIEL_OBJECTS}
+        $<TARGET_OBJECTS:tests>)
+add_test(magic_the_gathering_test magic_the_gathering_test)
 
 add_executable(mancala_test mancala/mancala_test.cc ${OPEN_SPIEL_OBJECTS}
                $<TARGET_OBJECTS:tests>)

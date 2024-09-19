@@ -71,6 +71,7 @@ EXPECTED_GAMES = frozenset([
     "liars_dice",
     "liars_dice_ir",
     "maedn",
+    "magic_the_gathering",
     "mancala",
     "markov_soccer",
     "matching_pennies_3p",

@@ -1,84 +1,59 @@
+# Magic The Gathering: Arena MCTS Bot
 
-# OpenSpiel: A Framework for Reinforcement Learning in Games
+Fork from the Open Spiel Open Source project, colaborative reserach project to create a Magic The Gathering: Arena Bot using Monte Carlo Tree Search, orginally attempted with MuZero, now using Open Spiel due to model complexity, reliability and memory efficiency.
 
-[![Documentation Status](https://readthedocs.org/projects/openspiel/badge/?version=latest)](https://openspiel.readthedocs.io/en/latest/?badge=latest)
-![build_and_test](https://github.com/deepmind/open_spiel/workflows/build_and_test/badge.svg)
+Current contributors:
 
-OpenSpiel is a collection of environments and algorithms for research in general
-reinforcement learning and search/planning in games. OpenSpiel supports n-player
-(single- and multi- agent) zero-sum, cooperative and general-sum, one-shot and
-sequential, strictly turn-taking and simultaneous-move, perfect and imperfect
-information games, as well as traditional multiagent environments such as
-(partially- and fully- observable) grid worlds and social dilemmas. OpenSpiel
-also includes tools to analyze learning dynamics and other common evaluation
-metrics. Games are represented as procedural extensive-form games, with some
-natural extensions. The core API and games are implemented in C++ and exposed to
-Python. Algorithms and tools are written both in C++ and Python.
+* Alexander Quesada Quesada - UCR - alexander.quesadaquesada@ucr.ac.cr
+* Frank Wang - University of Toronto - broodstar_frank@hotmail.com
 
-To try OpenSpiel in Google Colaboratory, please refer to `open_spiel/colabs` subdirectory or start [here](https://colab.research.google.com/github/deepmind/open_spiel/blob/master/open_spiel/colabs/install_open_spiel.ipynb).
+## How to run pilot simulation
 
-<p align="center">
-  <img src="docs/_static/OpenSpielB.png" alt="OpenSpiel visual asset">
-</p>
+1. Clone this repository
+2. Navigate to open_spiel/open_spiel/examples/examples
+3. Run `make mtg`
+4. You can now run and see a simulation of the game, we recommend running:
 
-# Index
+` ./mtg --max_simulations=20 --num_games=1 --player2=random --verbose=false --quiet=false`
 
-Please choose among the following options:
+This will run a single game with the first player (the target bot) being the MCTS bot and second player as random action chooser, in each state of the game it will run 20 simulations (you can see the reward / outcome mapping for each possible action by setting `--verbose=true`).
 
-*   [Installing OpenSpiel](docs/install.md)
-*   [Introduction to OpenSpiel](docs/intro.md)
-*   [API Overview and First Example](docs/concepts.md)
-*   [API Reference](docs/api_reference.md)
-*   [Overview of Implemented Games](docs/games.md)
-*   [Overview of Implemented Algorithms](docs/algorithms.md)
-*   [Developer Guide](docs/developer_guide.md)
-*   [Using OpenSpiel as a C++ Library](docs/library.md)
-*   [Guidelines and Contributing](docs/contributing.md)
-*   [Authors](docs/authors.md)
+## Captures and explanation
 
-For a longer introduction to the core concepts, formalisms, and terminology,
-including an overview of the algorithms and some results, please see
-[OpenSpiel: A Framework for Reinforcement Learning in Games](https://arxiv.org/abs/1908.09453).
+This current pilot version uses a matrix structure of the game:
 
-For an overview of OpenSpiel and example uses of the core API, please check out
-our tutorials:
+![Game Structure Example](screenshot.png)
 
-*   [Motivation, Core API, Brief Intro to Replictor Dynamics and Imperfect
-    Information Games](https://www.youtube.com/watch?v=8NCPqtPwlFQ) by Marc
-    Lanctot.
-    [(slides)](http://mlanctot.info/files/OpenSpiel_Tutorial_KU_Leuven_2022.pdf)
-    [(colab)](https://colab.research.google.com/github/deepmind/open_spiel/blob/master/open_spiel/colabs/OpenSpielTutorial.ipynb)
-*   [Motivation, Core API, Implementing CFR and REINFORCE on Kuhn poker, Leduc
-    poker, and Goofspiel](https://www.youtube.com/watch?v=o6JNHoGUXCo) by Edward
-    Lockhart.
-    [(slides)](http://mlanctot.info/files/open_spiel_tutorial-mar2021-comarl.pdf)
-    [(colab)](https://colab.research.google.com/github/deepmind/open_spiel/blob/master/open_spiel/colabs/CFR_and_REINFORCE.ipynb)
+### Visible information of the state
 
-If you use OpenSpiel in your research, please cite the paper using the following
-BibTeX:
+- The first row represents 7 cards in bot's hand (in this example it only has 4) and 9 empty slots.
+- The second row represents up to 16 lands on the bot's side of the arena
+- The third row represents up to 16 creatures on the bot's side of the arena
+- The fourth row represents up to 16 creatures on the enemy's side of the arena
+- The fifth row represents up to 16 lands on the enemy's side of the arena
 
-```bibtex
-@article{LanctotEtAl2019OpenSpiel,
-  title     = {{OpenSpiel}: A Framework for Reinforcement Learning in Games},
-  author    = {Marc Lanctot and Edward Lockhart and Jean-Baptiste Lespiau and
-               Vinicius Zambaldi and Satyaki Upadhyay and Julien P\'{e}rolat and
-               Sriram Srinivasan and Finbarr Timbers and Karl Tuyls and
-               Shayegan Omidshafiei and Daniel Hennes and Dustin Morrill and
-               Paul Muller and Timo Ewalds and Ryan Faulkner and J\'{a}nos Kram\'{a}r
-               and Bart De Vylder and Brennan Saeta and James Bradbury and David Ding
-               and Sebastian Borgeaud and Matthew Lai and Julian Schrittwieser and
-               Thomas Anthony and Edward Hughes and Ivo Danihelka and Jonah Ryan-Davis},
-  year      = {2019},
-  eprint    = {1908.09453},
-  archivePrefix = {arXiv},
-  primaryClass = {cs.LG},
-  journal   = {CoRR},
-  volume    = {abs/1908.09453},
-  url       = {http://arxiv.org/abs/1908.09453},
-}
-```
+* Bot / Enemy creature stats represents the power (first row) and toughness (second row) of the current creatures on the arena.
 
-## Versioning
+### Hidden information of the state
 
-We use [Semantic Versioning](https://semver.org/).
+* Enemy Hand represents the 7 cards in enemy's hand (in this example it only has 3).
 
+## TODO (Current Sprint)
+
+[] Add all of the lands, creatures, and spells (instants / sorceries / enchantments / artifacts) to the enumerators of the simulation (from the Sparky battle option).
+
+[] Create the mediatior between open_spiel and MTG: Arena
+
+## TODO (Epics)
+
+[] Add card description processing as part of the observation state
+
+[] Add Planeswalkers and their game mechanics
+
+[] Add the stack system, so the turn phase division and card availability by current phase.
+
+## Can I collaborate?
+
+Absolutely, as a research project we aim to enhance the state of the art of Open Spiel (thus Reinforcement Learning) by integrating it with an intricate game including randomness, hidden information, a large action space and even language processing components, leading to an AI that can handle wide multi-stage decision-making process, non-deterministic outcomes, and imperfect information, demostrating it's potential to work on partially observable, stochastic enviorments.
+
+You can clone and pull request right away if you have a clear idea of how you'd like to collaborate, however, don't hesitate to email us with your interest in this project to better explain and distribute the remaining work of this project.

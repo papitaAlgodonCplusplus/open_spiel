@@ -31,6 +31,9 @@ add_test(mcts_example_test mcts_example)
 add_executable(minimax_example minimax_example.cc ${OPEN_SPIEL_OBJECTS})
 add_test(minimax_example_test minimax_example)
 
+add_executable(mtg mtg.cc ${OPEN_SPIEL_OBJECTS})
+add_test(mtg_test mtg)
+
 add_executable(policy_iteration_example policy_iteration_example.cc ${OPEN_SPIEL_OBJECTS})
 add_test(policy_iteration_example_test policy_iteration_example)
 

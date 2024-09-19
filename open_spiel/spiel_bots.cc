@@ -141,6 +141,7 @@ class PolicyBot : public Bot {
   std::pair<ActionsAndProbs, Action> StepWithPolicy(
       const State& state) override {
     ActionsAndProbs actions_and_probs = GetPolicy(state);
+    SampleAction(actions_and_probs, rng_);
     return {actions_and_probs, SampleAction(actions_and_probs, rng_).first};
   }
 
