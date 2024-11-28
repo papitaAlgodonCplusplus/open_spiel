@@ -20,7 +20,6 @@
 #include <memory>
 #include <string>
 #include <vector>
-
 #include "open_spiel/spiel.h"
 
 namespace open_spiel
@@ -39,7 +38,7 @@ namespace open_spiel
     inline constexpr int start_creatures_player_1 = 48;
 
     bool is_simulated_ = true;
-    bool user_option = -1;
+    int user_option = -1;
 
     // State of a cell representing a card or an empty slot.
     enum class CellState
@@ -106,6 +105,9 @@ namespace open_spiel
       }
       std::string ActionToString(Player player, Action action_id) const override;
       std::string ToString() const override;
+      std::string ToVisualString() const;
+      std::string DrawCard(const CellState &card, int row) const;
+      std::string ColorizeCard(const CellState &card) const;
       bool IsTerminal() const override;
       std::vector<double> Returns() const override;
       std::string InformationStateString(Player player) const override;

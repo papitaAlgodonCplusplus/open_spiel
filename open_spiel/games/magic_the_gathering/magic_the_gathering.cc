@@ -1,19 +1,4 @@
-// Copyright 2019 DeepMind Technologies Limited
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-
 #include "open_spiel/games/magic_the_gathering/magic_the_gathering.h"
-
 #include <algorithm>
 #include <memory>
 #include <utility>
@@ -30,24 +15,21 @@ namespace open_spiel
   {
     namespace
     {
-
-      // Facts about the game.
       const GameType kGameType{
-          /*short_name=*/"magic_the_gathering",
-          /*long_name=*/"Magic the Gathering",
+          "magic_the_gathering",
+          "Magic the Gathering",
           GameType::Dynamics::kSequential,
           GameType::ChanceMode::kDeterministic,
           GameType::Information::kPerfectInformation,
           GameType::Utility::kZeroSum,
           GameType::RewardModel::kTerminal,
-          /*max_num_players=*/2,
-          /*min_num_players=*/2,
-          /*provides_information_state_string=*/true,
-          /*provides_information_state_tensor=*/false,
-          /*provides_observation_string=*/true,
-          /*provides_observation_tensor=*/true,
-          /*parameter_specification=*/{} // no parameters
-      };
+          2,
+          2,
+          true,
+          false,
+          true,
+          true,
+          {}};
 
       std::shared_ptr<const Game> Factory(const GameParameters &params)
       {
@@ -58,7 +40,7 @@ namespace open_spiel
 
       RegisterSingleTensorObserver single_tensor(kGameType.short_name);
 
-    } // namespace
+    }
 
     std::string StateToString(CellState state)
     {
@@ -111,8 +93,8 @@ namespace open_spiel
 
             if (std::cin.fail())
             {
-              std::cin.clear();                                                   // Clear error flags
-              std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Ignore invalid input
+              std::cin.clear();
+              std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
               std::cout << "Invalid input. Please enter a valid number.\n";
             }
           } while (userChoice < 0 || userChoice >= static_cast<int>(CellState::kCount));
@@ -122,40 +104,38 @@ namespace open_spiel
 
       if (move < 0 || move > 506)
       {
-        // // std::cout << "Error: Unknown action received: " << move << std::endl;
+
         SpielFatalError("Unknown action: " + std::to_string(move));
         return;
       }
 
-      // // std::cout << "Processing action: " << move << " by player " << current_player_ << std::endl;
       if (move == 200)
       {
       }
-      // Place a card from hand to the arena
+
       else if (move <= 6)
       {
-        // Determine selected card from hand
+
         CellState selected_card = (current_player_ == 0 && move <= 6) ? arena_[move] : enemy_hand_[move];
-        // // std::cout << "Selected card: " << StateToString(selected_card) << " from " << ((current_player_ == 0 && move <= 6) ? "player's hand" : "enemy's hand") << std::endl;
-        // // std::cout << "Placing card " << StateToString(selected_card) << " from hand to arena at position " << move << std::endl;
+
         PlaceCardFromHand(move, selected_card);
         move_number_++;
         return;
       }
-      // Handle attack
+
       else if (move == 7)
       {
-        // // std::cout << "Handling attack for move: " << move << std::endl;
+
         HandleAttack(move);
         return;
       }
-      // Handle defense
+
       else if (move >= 8 && move <= 25)
       {
-        // // std::cout << "Handling defense for move: " << move << std::endl;
+
         if (move == 25)
         {
-          // // std::cout << "it's time for combat\n";
+
           ExecuteCombat(current_attackers_, current_defenders_);
           is_attacking_ = -1;
           num_moves_++;
@@ -169,10 +149,10 @@ namespace open_spiel
           return;
         }
       }
-      // Buff card's power and toughness
+
       else if (move >= 26 && move <= 58)
       {
-        // // std::cout << "Applying buff to card at position " << (move - 24) << std::endl;
+
         if (new_power != -1 || new_toughness != -1)
         {
           ApplyModification(move, new_value, spell_duration, new_power, new_toughness);
@@ -191,15 +171,13 @@ namespace open_spiel
       {
         is_selecting_spell_target_ = -1;
       }
-      // Discard card from hand (pass action)
+
       else if (move >= 500 && move <= 506)
       {
-        // // std::cout << "Discarding card from hand at position " << (move - 500) << std::endl;
+
         current_player_ == 0 ? arena_[move - 500] = CellState::kEmpty : enemy_hand_[move - 500] = CellState::kEmpty;
       }
 
-      // Cleanup buffs and dead creatures and switch turn
-      // // std::cout << "Cleaning up buffs" << std::endl;
       Cleanup();
 
       if (WonGame(current_player_))
@@ -222,8 +200,6 @@ namespace open_spiel
         }
         move_number_++;
         current_player_ = 1 - current_player_;
-        // // std::cout << "Turn completed. Current move number: " << move_number_ << ". Next player: " << current_player_ << std::endl;
-        // // std::cout << this->ToString() << std::endl;
       }
 
       return;
@@ -249,7 +225,6 @@ namespace open_spiel
       std::fill(current_defenders_.begin(), current_defenders_.begin() + kNumCols, 0);
       std::fill(current_attackers_.begin(), current_attackers_.begin() + kNumCols, 0);
 
-      // Cleanup tapping
       for (size_t i = 0; i < kNumCells; i++)
       {
         tapping_system_[i] == 0 ?: tapping_system_[i] -= 1;
@@ -270,7 +245,6 @@ namespace open_spiel
           enemy_toughness_[i] = 0;
         }
 
-        // Check player's buffs
         if (has_modifications_[i] > 0)
         {
           has_modifications_[i] -= 1;
@@ -280,7 +254,6 @@ namespace open_spiel
           RestoreCreatureStats(i, start_creatures_player_0);
         }
 
-        // Check enemy's buffs
         if (enemy_has_modifications_[i] > 0)
         {
           enemy_has_modifications_[i] -= 1;
@@ -308,7 +281,6 @@ namespace open_spiel
         toughness = &enemy_toughness_;
       }
 
-      // // std::cout << " reseting for " << StateToString(arena_[index + arena_offset]) << " which is " << (*power)[index] << " / " << (*toughness)[index] << std::endl;
       switch (arena_[index + arena_offset])
       {
       case CellState::kCreature1:
@@ -339,24 +311,13 @@ namespace open_spiel
 
     void MagicTheGatheringState::ApplyModification(int cardIndex, int buffValue, int duration, int def_power, int def_toughness)
     {
-      // Determine if the card is an enemy card and print the result
+
       bool isEnemy = cardIndex >= (26 + kNumCols);
-      // std::cout << "Card Index: " << cardIndex << ", Is Enemy: " << isEnemy << std::endl;
 
       int index = cardIndex + 6;
-      // std::cout << "Calculated Index: " << index << std::endl;
-
-      // Print the selected arrays
-      // std::cout << "Target Power Array: " << (isEnemy ? "enemy_power_" : "power_") << std::endl;
-      // std::cout << "Target Toughness Array: " << (isEnemy ? "enemy_toughness_" : "toughness_") << std::endl;
-      // std::cout << "Target Modifications Array: " << (isEnemy ? "enemy_has_modifications_" : "has_modifications_") << std::endl;
 
       if (def_power != -1 || def_toughness != -1)
       {
-        // Print the new values if setting specific power/toughness
-        // std::cout << "Setting power and toughness directly." << std::endl;
-        // std::cout << "New Power Value: " << def_power << std::endl;
-        // std::cout << "New Toughness Value: " << def_toughness << std::endl;
 
         if (!isEnemy)
         {
@@ -373,12 +334,9 @@ namespace open_spiel
       }
       else
       {
-        // std::cout << "Applying buff value: " << buffValue << std::endl;
 
         if (!isEnemy)
         {
-          // std::cout << "Old Power Value: " << power_[index] << std::endl;
-          // std::cout << "Old Toughness Value: " << toughness_[index] << std::endl;
 
           power_[index % kNumCols] += buffValue;
           toughness_[index % kNumCols] += buffValue;
@@ -386,8 +344,6 @@ namespace open_spiel
         }
         else
         {
-          // std::cout << "Old Power Value: " << enemy_power_[index] << std::endl;
-          // std::cout << "Old Toughness Value: " << enemy_toughness_[index] << std::endl;
 
           enemy_power_[index % kNumCols] += buffValue;
           enemy_toughness_[index % kNumCols] += buffValue;
@@ -395,11 +351,7 @@ namespace open_spiel
         }
       }
 
-      // std::cout << "Modification Duration: " << duration << std::endl;
-
-      // Reset spell target selection and print the state
       is_selecting_spell_target_ = -1;
-      // std::cout << "Reset is_selecting_spell_target_ to: " << is_selecting_spell_target_ << std::endl;
 
       return;
     }
@@ -465,7 +417,7 @@ namespace open_spiel
               break;
             }
             arena_[i] = static_cast<CellState>(dis(gen));
-            // // std::cout << i << " in hand is now " << StateToString(arena_[i]) << std::endl;
+
             break;
           }
         }
@@ -486,7 +438,7 @@ namespace open_spiel
               break;
             }
             enemy_hand_[i] = static_cast<CellState>(dis(gen));
-            // // std::cout << i << " in hand is now " << StateToString(arena_[i]) << std::endl;
+
             break;
           }
         }
@@ -578,10 +530,10 @@ namespace open_spiel
       else if (IsSpell(selected_card))
       {
         is_selecting_spell_target_ = current_player_;
-        // Is a permanent
+
         if (selected_card == CellState::kPermanentSpell || selected_card == CellState::kPermanentDebuff)
         {
-          // Has default buffing/debuffing values
+
           if (selected_card == CellState::kPermanentDebuff)
           {
             new_power = static_cast<int>(SpellState::kPermanentDebuffP);
@@ -602,7 +554,6 @@ namespace open_spiel
       return;
     }
 
-    // Function to get the power of a creature given its position or type.
     int GetCreaturePower(CellState creature)
     {
       switch (creature)
@@ -624,7 +575,6 @@ namespace open_spiel
       }
     }
 
-    // Function to get the power of a creature given its position or type.
     int GetCreatureToughness(CellState creature)
     {
       switch (creature)
@@ -650,7 +600,7 @@ namespace open_spiel
     {
       int power = GetCreaturePower(card);
       int toughness = GetCreatureToughness(card);
-      // // std::cout << " Setting " << index << " as " << power << " and " << toughness << std::endl;
+
       if (current_player_ == 0)
       {
         power_[index % start_creatures_player_0] = power;
@@ -663,7 +613,6 @@ namespace open_spiel
       }
     }
 
-    // Function to find the first creature in a list of cells
     int MagicTheGatheringState::FindFirstCreature() const
     {
       size_t start = (current_player_ == 0) ? start_creatures_player_0 : start_creatures_player_1;
@@ -682,13 +631,8 @@ namespace open_spiel
       size_t start = (current_player_ == 0) ? start_creatures_player_0 : start_creatures_player_1;
       size_t end = start + kNumCols;
 
-      // Debugging: Print the start and end values
-      // // std::cout << "Start: " << start << ", End: " << end << std::endl;
-
       for (size_t i = start; i < end; ++i)
       {
-        // Debugging: Print the current index (i) and the creature/sickness status
-        // // std::cout << "Index: " << i << ", IsCreature: " << StateToString(arena_[i]) << ", Sickness: " << sickness_system_[i] << std::endl;
 
         if (IsCreature(arena_[i]) && !sickness_system_[i])
         {
@@ -697,7 +641,6 @@ namespace open_spiel
           if (it != current_attackers_.end())
           {
             *it = i;
-            // // std::cout << "Attacker added at position: " << std::distance(current_attackers_.begin(), it) << " with value: " << i << std::endl;
           }
         }
         else
@@ -706,16 +649,10 @@ namespace open_spiel
         }
       }
 
-      // // std::cout << "current_attackers_ has MASSIVE : " << current_attackers_.size() << std::endl;
-
-      // Debugging: Print the final list of attackerss
-      // // std::cout << "Attackers: ";
       for (size_t i = 0; i < current_attackers_.size(); ++i)
       {
         current_attackers_[i] > start_creatures_player_1 + kNumCols ? current_attackers_[i] = 0 : current_attackers_[i];
-        // // std::cout << current_attackers_[i] << " ";
       }
-      // // std::cout << std::endl;
 
       return current_attackers_;
     }
@@ -733,20 +670,17 @@ namespace open_spiel
         ++defender_index;
       }
 
-      // Debugging: Print the final list of attackerss
-      // // std::cout << "Defenders Possible: ";
       for (const auto &defender : defenders)
       {
-        // // std::cout << defender << " ";
       }
-      // // std::cout << std::endl;
+
       return defenders;
     }
 
     void MagicTheGatheringState::HandleAttack(int move)
     {
       current_attackers_ = GetAttackers();
-      // // std::cout << current_player_ << " has " << current_attackers_.size() << " attackers" << "\n";
+
       is_attacking_ = current_player_;
       current_player_ = 1 - current_player_;
       return;
@@ -759,7 +693,7 @@ namespace open_spiel
       {
         size_t defender_pos = defenders[i];
         size_t attacker_pos = attackers[attacker_index];
-        // // std::cout << "Battle between: " << attacker_pos << " and " << defender_pos << " at " << i << std::endl;
+
         if (attacker_pos > start_creatures_player_1 + kNumCols || defender_pos > start_creatures_player_1 + kNumCols || attacker_pos < start_creatures_player_0 || defender_pos < start_creatures_player_0)
         {
           continue;
@@ -769,7 +703,7 @@ namespace open_spiel
         CalculateCombatDamageBetweenCards(attacker_pos, defender_pos);
         attacker_index++;
       }
-      // Remaining attackers deal direct damage
+
       while (attacker_index < attackers.size())
       {
         if (attackers[attacker_index] < start_creatures_player_0 || attackers[attacker_index] > start_creatures_player_1 + kNumCols)
@@ -805,19 +739,16 @@ namespace open_spiel
         defending_card_life = enemy_toughness_[defender_pos - start_creatures_player_1] - power_[attacker_pos - start_creatures_player_0];
         attacking_card_life = toughness_[attacker_pos - start_creatures_player_0] - enemy_power_[defender_pos - start_creatures_player_1];
 
-        // // std::cout << "Defender's toughness: " << enemy_toughness_[defender_pos - 29] << ", Attacker's power: " << power_[attacker_pos - 16] << " defender creature is " << arena_[defender_pos] << " attacker creature is " << arena_[attacker_pos] << "\n";
-        // // std::cout << "Attacker's toughness: " << toughness_[attacker_pos - 16] << ", Defender's power: " << enemy_power_[defender_pos - 29] << "\n";
-
         if (defending_card_life <= 0)
         {
-          // // std::cout << "Defender's card at position " << defender_pos << " is destroyed.\n";
+
           arena_[defender_pos] = CellState::kEmpty;
           enemy_power_[defender_pos - start_creatures_player_1] = 0;
           enemy_toughness_[defender_pos - start_creatures_player_1] = 0;
         }
         if (attacking_card_life <= 0)
         {
-          // // std::cout << "Attacker's card at position " << attacker_pos << " is destroyed.\n";
+
           arena_[attacker_pos] = CellState::kEmpty;
           power_[attacker_pos - start_creatures_player_0] = 0;
           toughness_[attacker_pos - start_creatures_player_0] = 0;
@@ -828,19 +759,16 @@ namespace open_spiel
         defending_card_life = toughness_[defender_pos - start_creatures_player_0] - enemy_power_[attacker_pos - start_creatures_player_1];
         attacking_card_life = enemy_toughness_[attacker_pos - start_creatures_player_1] - power_[defender_pos - start_creatures_player_0];
 
-        // // std::cout << "Defender's toughness: " << toughness_[defender_pos - 16] << ", Attacker's power: " << enemy_power_[attacker_pos - 29] << "\n";
-        // // std::cout << "Attacker's toughness: " << enemy_toughness_[attacker_pos - 29] << ", Defender's power: " << power_[defender_pos - 16] << "\n";
-
         if (defending_card_life <= 0)
         {
-          // // std::cout << "Defender's card at position " << defender_pos << " is destroyed.\n";
+
           arena_[defender_pos] = CellState::kEmpty;
           power_[defender_pos - start_creatures_player_0] = 0;
           toughness_[defender_pos - start_creatures_player_0] = 0;
         }
         if (attacking_card_life <= 0)
         {
-          // // std::cout << "Attacker's card at position " << attacker_pos << " is destroyed.\n";
+
           arena_[attacker_pos] = CellState::kEmpty;
           enemy_power_[attacker_pos - start_creatures_player_1] = 0;
           enemy_toughness_[attacker_pos - start_creatures_player_1] = 0;
@@ -848,7 +776,7 @@ namespace open_spiel
         break;
 
       default:
-        // // std::cout << "Invalid player case.\n";
+
         break;
       }
     }
@@ -857,14 +785,12 @@ namespace open_spiel
     {
       std::vector<Action> moves;
 
-      // // std::cout << "Checking if the state is terminal.\n";
       if (IsTerminal())
       {
-        // // std::cout << "State is terminal, returning no actions.\n";
+
         return {};
       }
 
-      // // std::cout << "Is selecting spell target: " << is_selecting_spell_target_ << "\n";
       if (is_selecting_spell_target_ != -1)
       {
         int offset = 6;
@@ -887,13 +813,12 @@ namespace open_spiel
 
         if (moves.empty())
         {
-          // // std::cout << "No valid spell target found, returning action 404.\n";
+
           return std::vector<Action>{404};
         }
         return moves;
       }
 
-      // // std::cout << is_attacking_ << " is attacking - current player " << current_player_ << "\n";
       if (is_attacking_ != -1)
       {
         std::array<size_t, kNumCols> defenders = GetDefenders();
@@ -906,7 +831,7 @@ namespace open_spiel
           }
           else
           {
-            // // std::cout << " Defenders at i " << defenders[i] << " i " << i << " offset " << offset << " because " << defenders[i] << " not at current_defenders_" << std::endl;
+
             moves.push_back(defenders[i] - offset);
           }
         }
@@ -922,10 +847,8 @@ namespace open_spiel
         }
       }
 
-      // Skip Turn
       moves.push_back(200);
 
-      // // std::cout << "Current player: " << current_player_ << "\n";
       for (int i = 0; i < 7; ++i)
       {
         switch (current_player_)
@@ -933,7 +856,7 @@ namespace open_spiel
         case 0:
           if (arena_[i] != CellState::kEmpty)
           {
-            // // std::cout << "Player 0: Adding move for card at position: " << i << "\n";
+
             if (IsCreature(arena_[i]) && !HasEnoughMana(arena_[i]))
             {
               continue;
@@ -965,21 +888,19 @@ namespace open_spiel
             {
               continue;
             }
-            // // std::cout << "Player 1: Adding move for card at position: " << i << "\n";
+
             moves.push_back(i);
           }
           break;
 
         default:
-          // // std::cout << "Invalid player case.\n";
+
           break;
         }
       }
 
-      // // std::cout << "Adding creature actions.\n";
       AddCreatureActions(moves);
 
-      // // std::cout << "Adding discard options.\n";
       AddDiscardOptions(moves);
 
       return moves;
@@ -989,7 +910,6 @@ namespace open_spiel
     {
       int attack_start = (current_player_ == 0) ? start_creatures_player_0 : start_creatures_player_1;
 
-      // Add attacking moves
       for (int i = attack_start; i < attack_start + kNumCols; ++i)
       {
         if (arena_[i] != CellState::kEmpty && !sickness_system_[i])
@@ -1065,12 +985,10 @@ namespace open_spiel
     MagicTheGatheringState::MagicTheGatheringState(std::shared_ptr<const Game> game)
         : State(game)
     {
-      // Random number generator
+
       std::random_device rd;
       std::mt19937 gen(rd());
       std::uniform_int_distribution<int> dis(static_cast<int>(CellState::kPlains), static_cast<int>(CellState::kPermanentDebuff));
-
-      // Fill arena_[0:6] with random CellState (Hand)
 
       if (user_option == -1)
       {
@@ -1097,10 +1015,7 @@ namespace open_spiel
         }
       }
 
-      // Fill arena_[7:] with CellState::kEmpty
       std::fill(arena_.begin() + 7, arena_.end(), CellState::kEmpty);
-
-      // Fill enemy hand (hidden) with random CellState
 
       for (int i = 0; i < 7; ++i)
       {
@@ -1108,8 +1023,130 @@ namespace open_spiel
       }
     }
 
+    std::string MagicTheGatheringState::ToVisualString() const
+    {
+      std::ostringstream str;
+      str << "----------------------------------------------------------------------------\n";
+
+      // Display the game board (5 rows, each with 15 columns)
+      str << "\033[1;37m--- Game Board ---\033[0m\n";
+      for (int row = 0; row < 5; ++row)
+      {
+        for (int col = 0; col < 15; ++col)
+        {
+          int index = row * 15 + col;
+          str << DrawCard(arena_[index], row);
+        }
+        str << "\n";
+      }
+      str << "\n";
+
+      // Display enemy hand
+      str << "\033[1;37mEnemy Hand:\033[0m\n";
+      for (int i = 0; i < 7; ++i)
+      {
+        str << "[" << i << "] " << DrawCard(enemy_hand_[i], 0) << " ";
+      }
+      str << "\n\n";
+
+      // Bot creatures' stats
+      str << "\033[1;34m-- Bot Creatures Stats --\033[0m\n";
+      for (int i = 0; i < 14; ++i)
+      {
+        str << i << ": " << power_[i] << "/" << toughness_[i] << " | ";
+      }
+      str << "\n\n";
+
+      // Enemy creatures' stats
+      str << "\033[1;31m-- Enemy Creatures Stats --\033[0m\n";
+      for (int i = 0; i < 14; ++i)
+      {
+        str << i << ": " << enemy_power_[i] << "/" << enemy_toughness_[i] << " | ";
+      }
+      str << "\n\n";
+
+      // Display bot's hand
+      str << "\033[1;37mBot Hand:\033[0m\n";
+      for (int i = 0; i < 7; ++i)
+      {
+        str << "[" << i << "] " << DrawCard(enemy_hand_[i], 0) << " ";
+      }
+      str << "\n\n";
+
+      // Print player and enemy lives
+      str << "\033[1;37m--- Game Status ---\033[0m\n";
+      str << "Player Life: \033[1;92m" << Life << "\033[0m | Enemy Life: \033[1;91m" << EnemyLife << "\033[0m\n";
+      str << "----------------------------------------------------------------------------\n";
+
+      return str.str();
+    }
+
+    // Helper function to draw a card
+    std::string MagicTheGatheringState::DrawCard(const CellState &card, int row) const
+    {
+      switch (card)
+      {
+      case CellState::kEmpty:
+        return "- ";
+      case CellState::kPlains:
+        return "\033[1;91m[P]\033[0m ";
+      case CellState::kCreature1:
+        return "\033[1;34m[R]\033[0m ";
+      case CellState::kCreature2:
+        return "\033[1;32m[W]\033[0m ";
+      case CellState::kCreature3:
+        return "\033[1;33m[A]\033[0m ";
+      case CellState::kCreature4:
+        return "\033[1;31m[K]\033[0m ";
+      case CellState::kCreature5:
+        return "\033[1;35m[M]\033[0m ";
+      case CellState::kCreature6:
+        return "\033[1;36m[G]\033[0m ";
+      case CellState::kSpell:
+        return "\033[1;92m[U]\033[0m ";
+      case CellState::kPermanentSpell:
+        return "\033[1;93m[B]\033[0m ";
+      case CellState::kPermanentDebuff:
+        return "\033[1;94m[C]\033[0m ";
+      default:
+        return "? ";
+      }
+    }
+    // Helper function to colorize card names
+    std::string MagicTheGatheringState::ColorizeCard(const CellState &card) const
+    {
+      switch (card)
+      {
+      case CellState::kCreature1:
+        return "\033[1;34mR\033[0m";
+      case CellState::kCreature2:
+        return "\033[1;32mW\033[0m";
+      case CellState::kCreature3:
+        return "\033[1;33mA\033[0m";
+      case CellState::kCreature4:
+        return "\033[1;31mK\033[0m";
+      case CellState::kCreature5:
+        return "\033[1;35mM\033[0m";
+      case CellState::kCreature6:
+        return "\033[1;36mG\033[0m";
+      case CellState::kPlains:
+        return "\033[1;91mP\033[0m";
+      case CellState::kSpell:
+        return "\033[1;92mS\033[0m";
+      case CellState::kPermanentSpell:
+        return "\033[1;93mB\033[0m";
+      case CellState::kPermanentDebuff:
+        return "\033[1;94mC\033[0m";
+      default:
+        return "-";
+      }
+    }
+
     std::string MagicTheGatheringState::ToString() const
     {
+      return this->ToVisualString();
+
+      /*
       std::ostringstream str;
       for (int row = 0; row < kNumRows; ++row)
       {
@@ -1227,6 +1264,7 @@ namespace open_spiel
       str << std::endl;
       str << "Life: " << Life << " - " << EnemyLife << std::endl;
       return str.str();
+      */
     }
 
     bool MagicTheGatheringState::IsTerminal() const
@@ -1270,7 +1308,6 @@ namespace open_spiel
       SPIEL_CHECK_GE(player, 0);
       SPIEL_CHECK_LT(player, num_players_);
 
-      // Treat `values` as a 2-d tensor. While it may not be
       TensorView<2> view(values, {kCellStates, kNumCells + (kNumCols * 4)}, true);
       for (int cell = 0; cell < kNumCells; ++cell)
       {
@@ -1318,5 +1355,5 @@ namespace open_spiel
     MagicTheGatheringGame::MagicTheGatheringGame(const GameParameters &params)
         : Game(kGameType, params) {}
 
-  } // namespace magic_the_gathering
-} // namespace open_spiel
+  }
+}

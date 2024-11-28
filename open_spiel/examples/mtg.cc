@@ -22,6 +22,7 @@
 #include <random>
 #include <string>
 #include <vector>
+#include <algorithm>
 
 #include "open_spiel/abseil-cpp/absl/container/btree_map.h"
 #include "open_spiel/abseil-cpp/absl/flags/flag.h"
@@ -112,9 +113,6 @@ std::pair<std::vector<double>, std::vector<std::string>> PlayGame(
   while (!state->IsTerminal())
   {
     open_spiel::Player player = state->CurrentPlayer();
-    if (!quiet)
-      std::cerr << "player turn: " << player << std::endl;
-
     open_spiel::Action action;
     if (state->IsChanceNode())
     {
@@ -135,8 +133,48 @@ std::pair<std::vector<double>, std::vector<std::string>> PlayGame(
       // Decision node, ask the right bot to make its action
       action = bots[player]->Step(*state);
       if (!quiet)
-        std::cerr << "Chose action: " << state->ActionToString(player, action)
-                  << std::endl;
+      {
+        std::string player_str = (player == 0) ? "\033[1;34mBot\033[0m" : "\033[1;31mEnemy\033[0m";
+        int64_t min = 0;
+        action = std::min(min, action - 1);
+        std::string action_str = state->ActionToString(player, action);
+        std::string action_color = "\033[1;32m"; // Default color for actions
+
+        if (action < 7)
+        {
+          action_color = "\033[1;32m"; // Green for very low percentage actions
+        }
+        else if (action < 14)
+        {
+          action_color = "\033[1;33m"; // Yellow for low percentage actions
+        }
+        else if (action < 21)
+        {
+          action_color = "\033[1;36m"; // Cyan for medium-low percentage actions
+        }
+        else if (action < 28)
+        {
+          action_color = "\033[1;34m"; // Blue for medium percentage actions
+        }
+        else if (action < 35)
+        {
+          action_color = "\033[1;35m"; // Magenta for high percentage actions
+        }
+        else if (action < 300)
+        {
+          action_color = "\033[1;91m"; // Bright Red for 2XX actions
+        }
+        else if (action < 600)
+        {
+          action_color = "\033[1;95m"; // Bright Magenta for 5XX actions
+        }
+        else
+        {
+          action_color = "\033[1;31m"; // Red for very high percentage actions
+        }
+
+        std::cerr << "Player Turn: " << player_str << " | Chose Action: " << action_color << action_str << "\033[0m" << std::endl << std::endl;
+      }
     }
     for (open_spiel::Player p = 0; p < bots.size(); ++p)
     {
@@ -149,8 +187,11 @@ std::pair<std::vector<double>, std::vector<std::string>> PlayGame(
     state->ApplyAction(action);
 
     if (!quiet)
-      std::cerr << "State: " << std::endl
-                << state->ToString() << std::endl;
+    {
+      std::cerr << state->ToString() << std::endl;
+      std::cerr << "Please press enter to continue...";
+      std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    }
   }
 
   std::cerr << "Returns: " << absl::StrJoin(state->Returns(), ",")
@@ -169,6 +210,20 @@ int main(int argc, char **argv)
   std::cerr << "game: " << game_name << std::endl;
   std::shared_ptr<const open_spiel::Game> game =
       open_spiel::LoadGame(game_name);
+
+  std::cerr << "\n\033[1;37mGame Entities and Descriptions:\033[0m\n";
+  std::cerr << "\033[1;37mEmpty\033[0m: Represents an empty cell.\n";
+  std::cerr << "\033[1;34mW\033[0m: Represents the creature 'Wizard'.\n";
+  std::cerr << "\033[1;32mR\033[0m: Represents the creature 'Rocky'.\n";
+  std::cerr << "\033[1;33mA\033[0m: Represents the creature 'Arca'.\n";
+  std::cerr << "\033[1;31mK\033[0m: Represents the creature 'King'.\n";
+  std::cerr << "\033[1;35mM\033[0m: Represents the creature 'Mory'.\n";
+  std::cerr << "\033[1;36mG\033[0m: Represents the creature 'Galio'.\n";
+  std::cerr << "\033[1;91mP\033[0m: Represents a land type 'Plain'.\n";
+  std::cerr << "\033[1;92mU\033[0m: Represents a spell 'Upgrade'.\n";
+  std::cerr << "\033[1;93mB\033[0m: Represents a permanent spell 'Blessing'.\n";
+  std::cerr << "\033[1;94mC\033[0m: Represents a permanent debuff 'Curse'.\n";
+  std::cerr << "--------------------------------------\n";
 
   // MCTS supports arbitrary number of players, but this example assumes
   // 2-player games.

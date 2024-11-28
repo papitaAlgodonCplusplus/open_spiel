@@ -1648,136 +1648,6 @@ uci_bot_test/fast:
 .PHONY : uci_bot_test/fast
 
 #=============================================================================
-# Target rules for targets named benchmark_game
-
-# Build rule for target.
-benchmark_game: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 benchmark_game
-.PHONY : benchmark_game
-
-# fast build rule for target.
-benchmark_game/fast:
-	$(MAKE) $(MAKESILENT) -f examples/CMakeFiles/benchmark_game.dir/build.make examples/CMakeFiles/benchmark_game.dir/build
-.PHONY : benchmark_game/fast
-
-#=============================================================================
-# Target rules for targets named cfr_example
-
-# Build rule for target.
-cfr_example: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 cfr_example
-.PHONY : cfr_example
-
-# fast build rule for target.
-cfr_example/fast:
-	$(MAKE) $(MAKESILENT) -f examples/CMakeFiles/cfr_example.dir/build.make examples/CMakeFiles/cfr_example.dir/build
-.PHONY : cfr_example/fast
-
-#=============================================================================
-# Target rules for targets named cfr_multi_equilibria_example
-
-# Build rule for target.
-cfr_multi_equilibria_example: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 cfr_multi_equilibria_example
-.PHONY : cfr_multi_equilibria_example
-
-# fast build rule for target.
-cfr_multi_equilibria_example/fast:
-	$(MAKE) $(MAKESILENT) -f examples/CMakeFiles/cfr_multi_equilibria_example.dir/build.make examples/CMakeFiles/cfr_multi_equilibria_example.dir/build
-.PHONY : cfr_multi_equilibria_example/fast
-
-#=============================================================================
-# Target rules for targets named imperfect_recall_mccfr
-
-# Build rule for target.
-imperfect_recall_mccfr: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 imperfect_recall_mccfr
-.PHONY : imperfect_recall_mccfr
-
-# fast build rule for target.
-imperfect_recall_mccfr/fast:
-	$(MAKE) $(MAKESILENT) -f examples/CMakeFiles/imperfect_recall_mccfr.dir/build.make examples/CMakeFiles/imperfect_recall_mccfr.dir/build
-.PHONY : imperfect_recall_mccfr/fast
-
-#=============================================================================
-# Target rules for targets named example
-
-# Build rule for target.
-example: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 example
-.PHONY : example
-
-# fast build rule for target.
-example/fast:
-	$(MAKE) $(MAKESILENT) -f examples/CMakeFiles/example.dir/build.make examples/CMakeFiles/example.dir/build
-.PHONY : example/fast
-
-#=============================================================================
-# Target rules for targets named fsicfr_liars_dice
-
-# Build rule for target.
-fsicfr_liars_dice: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 fsicfr_liars_dice
-.PHONY : fsicfr_liars_dice
-
-# fast build rule for target.
-fsicfr_liars_dice/fast:
-	$(MAKE) $(MAKESILENT) -f examples/CMakeFiles/fsicfr_liars_dice.dir/build.make examples/CMakeFiles/fsicfr_liars_dice.dir/build
-.PHONY : fsicfr_liars_dice/fast
-
-#=============================================================================
-# Target rules for targets named gtp
-
-# Build rule for target.
-gtp: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 gtp
-.PHONY : gtp
-
-# fast build rule for target.
-gtp/fast:
-	$(MAKE) $(MAKESILENT) -f examples/CMakeFiles/gtp.dir/build.make examples/CMakeFiles/gtp.dir/build
-.PHONY : gtp/fast
-
-#=============================================================================
-# Target rules for targets named matrix_example
-
-# Build rule for target.
-matrix_example: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 matrix_example
-.PHONY : matrix_example
-
-# fast build rule for target.
-matrix_example/fast:
-	$(MAKE) $(MAKESILENT) -f examples/CMakeFiles/matrix_example.dir/build.make examples/CMakeFiles/matrix_example.dir/build
-.PHONY : matrix_example/fast
-
-#=============================================================================
-# Target rules for targets named mcts_example
-
-# Build rule for target.
-mcts_example: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 mcts_example
-.PHONY : mcts_example
-
-# fast build rule for target.
-mcts_example/fast:
-	$(MAKE) $(MAKESILENT) -f examples/CMakeFiles/mcts_example.dir/build.make examples/CMakeFiles/mcts_example.dir/build
-.PHONY : mcts_example/fast
-
-#=============================================================================
-# Target rules for targets named minimax_example
-
-# Build rule for target.
-minimax_example: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 minimax_example
-.PHONY : minimax_example
-
-# fast build rule for target.
-minimax_example/fast:
-	$(MAKE) $(MAKESILENT) -f examples/CMakeFiles/minimax_example.dir/build.make examples/CMakeFiles/minimax_example.dir/build
-.PHONY : minimax_example/fast
-
-#=============================================================================
 # Target rules for targets named mtg
 
 # Build rule for target.
@@ -1789,71 +1659,6 @@ mtg: cmake_check_build_system
 mtg/fast:
 	$(MAKE) $(MAKESILENT) -f examples/CMakeFiles/mtg.dir/build.make examples/CMakeFiles/mtg.dir/build
 .PHONY : mtg/fast
-
-#=============================================================================
-# Target rules for targets named policy_iteration_example
-
-# Build rule for target.
-policy_iteration_example: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 policy_iteration_example
-.PHONY : policy_iteration_example
-
-# fast build rule for target.
-policy_iteration_example/fast:
-	$(MAKE) $(MAKESILENT) -f examples/CMakeFiles/policy_iteration_example.dir/build.make examples/CMakeFiles/policy_iteration_example.dir/build
-.PHONY : policy_iteration_example/fast
-
-#=============================================================================
-# Target rules for targets named value_iteration_example
-
-# Build rule for target.
-value_iteration_example: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 value_iteration_example
-.PHONY : value_iteration_example
-
-# fast build rule for target.
-value_iteration_example/fast:
-	$(MAKE) $(MAKESILENT) -f examples/CMakeFiles/value_iteration_example.dir/build.make examples/CMakeFiles/value_iteration_example.dir/build
-.PHONY : value_iteration_example/fast
-
-#=============================================================================
-# Target rules for targets named tabular_sarsa_example
-
-# Build rule for target.
-tabular_sarsa_example: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 tabular_sarsa_example
-.PHONY : tabular_sarsa_example
-
-# fast build rule for target.
-tabular_sarsa_example/fast:
-	$(MAKE) $(MAKESILENT) -f examples/CMakeFiles/tabular_sarsa_example.dir/build.make examples/CMakeFiles/tabular_sarsa_example.dir/build
-.PHONY : tabular_sarsa_example/fast
-
-#=============================================================================
-# Target rules for targets named tabular_q_learning_example
-
-# Build rule for target.
-tabular_q_learning_example: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 tabular_q_learning_example
-.PHONY : tabular_q_learning_example
-
-# fast build rule for target.
-tabular_q_learning_example/fast:
-	$(MAKE) $(MAKESILENT) -f examples/CMakeFiles/tabular_q_learning_example.dir/build.make examples/CMakeFiles/tabular_q_learning_example.dir/build
-.PHONY : tabular_q_learning_example/fast
-
-#=============================================================================
-# Target rules for targets named count_all_states
-
-# Build rule for target.
-count_all_states: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 count_all_states
-.PHONY : count_all_states
-
-# fast build rule for target.
-count_all_states/fast:
-	$(MAKE) $(MAKESILENT) -f examples/CMakeFiles/count_all_states.dir/build.make examples/CMakeFiles/count_all_states.dir/build
-.PHONY : count_all_states/fast
 
 #=============================================================================
 # Target rules for targets named games
@@ -3752,7 +3557,6 @@ help:
 	@echo "... bargaining_instance_generator"
 	@echo "... bargaining_test"
 	@echo "... battleship_test"
-	@echo "... benchmark_game"
 	@echo "... best_response_test"
 	@echo "... blackjack_test"
 	@echo "... blotto_test"
@@ -3762,8 +3566,6 @@ help:
 	@echo "... bridge_test"
 	@echo "... catch_test"
 	@echo "... cfr_br_test"
-	@echo "... cfr_example"
-	@echo "... cfr_multi_equilibria_example"
 	@echo "... cfr_test"
 	@echo "... checkers_test"
 	@echo "... chess_test"
@@ -3780,7 +3582,6 @@ help:
 	@echo "... coordinated_mp_test"
 	@echo "... corr_dev_builder_test"
 	@echo "... corr_dist_test"
-	@echo "... count_all_states"
 	@echo "... crazy_eights_test"
 	@echo "... crowd_modelling_2d_test"
 	@echo "... crowd_modelling_test"
@@ -3800,11 +3601,9 @@ help:
 	@echo "... efg_writer_test"
 	@echo "... euchre_test"
 	@echo "... evaluate_bots_test"
-	@echo "... example"
 	@echo "... external_sampling_mccfr_test"
 	@echo "... file_test"
 	@echo "... first_sealed_auction_test"
-	@echo "... fsicfr_liars_dice"
 	@echo "... functional_test"
 	@echo "... game_transforms"
 	@echo "... games"
@@ -3815,13 +3614,11 @@ help:
 	@echo "... gin_rummy_test"
 	@echo "... go_test"
 	@echo "... goofspiel_test"
-	@echo "... gtp"
 	@echo "... havannah_test"
 	@echo "... hearts_test"
 	@echo "... hex_test"
 	@echo "... history_tree_test"
 	@echo "... human_bot_test"
-	@echo "... imperfect_recall_mccfr"
 	@echo "... infostate_tree_test"
 	@echo "... is_mcts_test"
 	@echo "... json_test"
@@ -3838,11 +3635,8 @@ help:
 	@echo "... mancala_test"
 	@echo "... markov_soccer_test"
 	@echo "... matching_pennies_3p_test"
-	@echo "... matrix_example"
 	@echo "... matrix_game_utils_test"
 	@echo "... matrix_games_test"
-	@echo "... mcts_example"
-	@echo "... minimax_example"
 	@echo "... minimax_test"
 	@echo "... misere_test"
 	@echo "... morpion_solitaire_test"
@@ -3865,7 +3659,6 @@ help:
 	@echo "... phantom_go_test"
 	@echo "... phantom_ttt_test"
 	@echo "... pig_test"
-	@echo "... policy_iteration_example"
 	@echo "... pyspiel"
 	@echo "... quoridor_test"
 	@echo "... random_test"
@@ -3887,9 +3680,7 @@ help:
 	@echo "... stones_and_gems_test"
 	@echo "... tabular_best_response_mdp_test"
 	@echo "... tabular_exploitability_test"
-	@echo "... tabular_q_learning_example"
 	@echo "... tabular_q_learning_test"
-	@echo "... tabular_sarsa_example"
 	@echo "... tabular_sarsa_test"
 	@echo "... tarok_test"
 	@echo "... tensor_game_utils_test"
@@ -3906,7 +3697,6 @@ help:
 	@echo "... uci_bot_test"
 	@echo "... ultimate_tic_tac_toe_test"
 	@echo "... utils"
-	@echo "... value_iteration_example"
 	@echo "... y_test"
 	@echo "... zerosum_test"
 	@echo "... action_view.o"
